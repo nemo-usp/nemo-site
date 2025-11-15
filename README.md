@@ -2,11 +2,11 @@
 
 Bem-vindo ao repositório oficial do site do NEMO (Núcleo de Estudos de Matemática Olímpica), um grupo de extensão da USP de São Carlos dedicado à matemática competitiva e à resolução de problemas.
 
+O site pode ser acessado [aqui](https://nemo.icmc.usp.br/).
+
 ## Sobre Este Projeto
 
 Este projeto é uma aplicação web baseada em Flask que serve como uma das presenças online do NEMO. Ele possui um blog para notícias e artigos, uma seção para os Problemas do Mês e páginas com informações sobre o grupo, seus membros e materiais de estudo.
-
-O site pode ser acessado [aqui](https://nemo.icmc.usp.br/).
 
 ## Funcionalidades
 
