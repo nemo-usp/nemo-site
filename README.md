@@ -6,6 +6,8 @@ Bem-vindo ao repositório oficial do site do NEMO (Núcleo de Estudos de Matemá
 
 Este projeto é uma aplicação web baseada em Flask que serve como uma das presenças online do NEMO. Ele possui um blog para notícias e artigos, uma seção para os Problemas do Mês e páginas com informações sobre o grupo, seus membros e materiais de estudo.
 
+O site pode ser acessado [aqui](https://nemo.icmc.usp.br/).
+
 ## Funcionalidades
 
 -   **Gerenciamento de Conteúdo com Arquivos:** Posts e artigos são escritos em Markdown e gerenciados através da extensão Flask-FlatPages, tornando a criação de conteúdo simples e acessível.
