@@ -8,238 +8,153 @@ Este projeto é uma aplicação web baseada em Flask que serve como uma das pres
 
 ## Funcionalidades
 
--   **Gerenciamento de Conteúdo Dinâmico:** Posts de blog são gerenciados com Flask-FlatPages (arquivos Markdown), enquanto itens de materiais são gerenciados via banco de dados SQL.
+-   **Gerenciamento de Conteúdo com Arquivos:** Posts e artigos são escritos em Markdown e gerenciados através da extensão Flask-FlatPages, tornando a criação de conteúdo simples e acessível.
 -   **Autenticação de Usuários:** O site possui um sistema completo de autenticação de usuários, permitindo que membros façam login e gerenciem o conteúdo.
 -   **Editor de Posts:** Um editor de Markdown no navegador está disponível para criar e editar publicações.
 -   **Implantação com Docker:** A aplicação é totalmente containerizada com Docker e pronta para implantação em produção com o Gunicorn.
 -   **Segurança Integrada:** A aplicação inclui proteção contra CSRF em todos os formulários e sanitiza o conteúdo gerado por usuários para prevenir ataques de XSS.
 
----
+## Como Começar
 
-## 🚀 Instruções de Implantação (Vultr + Docker)
+Você pode executar este projeto localmente para desenvolvimento ou testes. Existem duas maneiras recomendadas para configurar a aplicação: usando Docker (recomendado para um ambiente limpo e isolado) ou configurando-a diretamente em sua máquina.
 
-Este é o guia padrão para implantar o site em um novo servidor Ubuntu (como o Vultr).
+### Pré-requisitos
 
-### Estágio 1: 🖥️ Configuração Inicial do Servidor
+-   Python 3.10+
+-   Docker (se for usar a configuração com Docker)
 
-1.  **Acesse seu servidor** (via SSH ou console Vultr):
+### Opção 1: Executando com Docker (Recomendado)
+
+1.  **Clone o repositório:**
     ```bash
-    # Substitua 'root' e 'seu_ip_do_servidor'
-    ssh root@seu_ip_do_servidor
+    git clone <url-do-repositorio>
+    cd <diretorio-do-repositorio>
     ```
 
-2.  **Crie um usuário administrador:**
-    ```bash
-    # Substitua 'nemo_admin' pelo seu nome de usuário
-    adduser nemo_admin
-    usermod -aG sudo nemo_admin
+2.  **Crie um arquivo de ambiente:**
+    Crie um arquivo chamado `.env` na raiz do projeto e adicione o seguinte conteúdo. **Certifique-se de alterar a `SECRET_KEY` para uma string nova e aleatória.**
+    
+    ```
+    SECRET_KEY='sua_chave_super_secreta_aqui'
+    DATABASE_URL='sqlite:///posts.db'
     ```
 
-3.  **Configure o Firewall (UFW):**
-    *Nota: Fizemos isso antes de instalar o NGINX, então abrimos as portas manualmente.*
+    (OBS: Se não funcionar inicialmente, tente remover a linha do `DATABASE_URL` e tente prosseguir)
+
+3.  **Crie um ambiente virtual:**
     ```bash
-    sudo ufw allow OpenSSH
-    sudo ufw allow 80/tcp     # HTTP
-    sudo ufw allow 443/tcp    # HTTPS
-    sudo ufw enable         # Digite 'y' para confirmar
+    python -m venv venv
+    source venv/bin/activate  # No Windows, use `venv\Scripts\activate`
+    ```
+4.  **Instale as dependências:**
+    ```bash
+    venv/bin/pip install -r requirements.txt
     ```
 
-4.  **Atualize o servidor:**
-    ```bash
-    sudo apt update
-    sudo apt upgrade -y
+5.  **Inicialize o Banco de Dados (Primeira vez):**
+    Execute os seguintes comandos na ordem correta para criar o arquivo do banco de dados (por padrão `posts.db`) e configurar as tabelas:
+    ```
+    flask db init     # Cria a pasta 'migrations' (apenas na primeira vez)
+    flask db migrate -m "Initial database schema"  # Cria o script de migração inicial
+    flask db upgrade  # Aplica a migração para criar o banco de dados e tabelas
     ```
 
-5.  **Re-login como seu novo usuário:**
-    Saia da sessão `root` e entre com seu novo usuário.
-    ```bash
-    exit
-    ssh nemo_admin@seu_ip_do_servidor
+    (OBS: Caso essa parte esteja falhando, tente excluir as pastas: `venv`, `instance` e `migrations` e repita a partir do passo 3.)
+
+    ps.: Pode ser que `instance` e `migrations` não existam
+
+6. **Saia do ambiente virtual:**
+   ```bash
+    deactivate
     ```
 
-### Estágio 2:  DNS (Porkbun)
-
-1.  **Faça login no Porkbun** e vá para os registros DNS de `nemo-usp.org`.
-2.  **Exclua** quaisquer registros "A" padrão que estejam lá.
-3.  **Crie dois novos registros "A":**
-
-    * **Registro 1 (Raiz):**
-        * **Tipo:** `A`
-        * **Host:** `@`
-        * **Resposta:** `SEU_IP_DO_SERVIDOR_VULTR`
-    * **Registro 2 (www):**
-        * **Type:** `A`
-        * **Host:** `www`
-        * **Resposta:** `SEU_IP_DO_SERVIDOR_VULTR`
-
-### Estágio 3: 📦 Instalar Docker e Obter o Código
-
-1.  **Instale Git e Docker:**
+7.  **Construa a imagem Docker:**
     ```bash
-    sudo apt install git docker.io
+    sudo docker build -t nemo-app .
     ```
-
-2.  **Adicione seu usuário ao grupo Docker:**
-    Isso permite que você execute comandos `docker` sem `sudo`.
+    
+    Caso não funcione de imediato, tente rodar antes:
+    
     ```bash
-    sudo usermod -aG docker ${USER}
+    sudo systemctl start docker
     ```
-
-3.  **LOG OUT E LOG BACK IN:**
-    Você **deve** sair e entrar novamente no SSH para que a alteração do grupo tenha efeito.
+    Disso, tente rodar novamente o comandor anterior a esse.
+    
+8.  **Execute o contêiner Docker:**
+    Para garantir que seus posts, uploads e o banco de dados sejam salvos permanentemente, execute o contêiner com volumes, que conectam pastas do seu computador ao contêiner:
     ```bash
-    exit
-    ssh nemo_admin@seu_ip_do_servidor
-    ```
-
-4.  **Clone seu repositório:**
-    ```bash
-    git clone <url-do-seu-repositorio-github>
-    cd <nome-do-seu-repositorio>  # ex: cd nemo
-    ```
-
-### Estágio 4: 📂 Preparar Dados Persistentes
-
-Vamos criar os arquivos e pastas que o Docker precisa *antes* de executá-lo.
-
-1.  **Crie o arquivo `.env`:**
-    ```bash
-    nano .env
-    ```
-    Cole o seguinte conteúdo. **NÃO use aspas** e mude a `SECRET_KEY` para algo aleatório.
-
-    ```env
-    # Use uma chave aleatória e forte aqui
-    SECRET_KEY=sua_chave_super_secreta_aqui
-    # Use o caminho absoluto DENTRO do container
-    DATABASE_URL=sqlite:////app/instance/posts.db
-    ```
-    *Salve (Ctrl+O) e Saia (Ctrl+X).*
-
-2.  **Crie as pastas de volume:**
-    ```bash
-    mkdir -p instance
-    mkdir -p static/uploads
-    ```
-
-3.  **Corrija as permissões da `instance`:**
-    Isso é crucial para permitir que o container crie o arquivo `.db`.
-    ```bash
-    sudo chmod -R 777 instance/
-    ```
-
-4.  **Construa a Imagem Docker:**
-    ```bash
-    docker build -t nemo-app .
-    ```
-
-5.  **Inicialize o Banco de Dados (Usando Docker):**
-    Este comando executa o `flask db upgrade` *dentro* do container para criar seu `posts.db` com as tabelas corretas.
-    ```bash
-    docker run --rm \
-      -v $(pwd)/instance:/app/instance \
-      -v $(pwd)/posts:/app/posts \
-      --env-file .env \
-      nemo-app \
-      flask db upgrade
-    ```
-
-### Estágio 5: 🚀 Executar a Aplicação
-
-Agora vamos iniciar o container de produção no modo "detached" (em segundo plano).
-
-1.  **Remova qualquer container antigo (se houver):**
-    ```bash
-    docker rm -f nemo-app-prod
-    ```
-    *(Não se preocupe se disser "No such container".)*
-
-2.  **Inicie o container de produção:**
-    ```bash
-    docker run -d --restart always \
-      -p 127.0.0.1:8000:8000 \
+    sudo docker run -p 8000:8000 \
       -v $(pwd)/posts:/app/posts \
       -v $(pwd)/instance:/app/instance \
       -v $(pwd)/static/uploads:/app/static/uploads \
       --env-file .env \
-      --name nemo-app-prod \
       nemo-app
     ```
 
-### Estágio 6: 🌐 Configurar NGINX e HTTPS
+9.  A aplicação estará disponível em [http://localhost:8000](http://localhost:8000).
 
-1.  **Instale o NGINX:**
+### Opção 2: Configuração Local
+
+1.  **Clone o repositório:**
     ```bash
-    sudo apt install nginx
+    git clone <url-do-repositorio>
+    cd <diretorio-do-repositorio>
     ```
-
-2.  **Crie o arquivo de configuração do NGINX:**
+    
+2.  **Crie um ambiente virtual:**
     ```bash
-    sudo nano /etc/nginx/sites-available/nemo-usp.org
+    python -m venv venv
+    source venv/bin/activate  # No Windows, use `venv\Scripts\activate`
     ```
-    Cole a seguinte configuração:
-    ```nginx
-    server {
-        listen 80;
-        server_name nemo-usp.org www.nemo-usp.org;
-
-        location / {
-            proxy_pass [http://127.0.0.1:8000](http://127.0.0.1:8000);
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-        }
-    }
-    ```
-
-3.  **Habilite o site:**
+    
+3.  **Instale as dependências:**
     ```bash
-    sudo ln -s /etc/nginx/sites-available/nemo-usp.org /etc/nginx/sites-enabled/
+    venv/bin/pip install -r requirements.txt
+    ```
+    
+4.  **Crie um arquivo de ambiente:**
+    Crie um arquivo chamado `.env` na raiz do projeto e adicione o seguinte conteúdo. **Certifique-se de alterar a `SECRET_KEY` para uma string nova e aleatória.**
+    ```
+    SECRET_KEY='sua_chave_super_secreta_aqui'
+    DATABASE_URL='sqlite:///posts.db'
     ```
 
-4.  **Teste e reinicie o NGINX:**
+    (OBS: Se não funcionar inicialmente, tente remover a linha do `DATABASE_URL` e tente prosseguir)
+
+5.  **Inicialize o Banco de Dados (Primeira vez):**
+    Execute os seguintes comandos na ordem correta para criar o arquivo do banco de dados (por padrão `posts.db`) e configurar as tabelas:
+    ```
+    flask db init     # Cria a pasta 'migrations' (apenas na primeira vez)
+    flask db migrate -m "Initial database schema"  # Cria o script de migração inicial
+    flask db upgrade  # Aplica a migração para criar o banco de dados e tabelas
+    ```
+
+    (OBS: Caso essa parte esteja falhando, tente excluir as pastas: `venv`, `instance`, e `migrations` e repita a partir do passo 2.)
+
+    ps.: Pode ser que `instance` e `migrations` não existam
+    
+6.  **Execute a aplicação:**
     ```bash
-    sudo nginx -t
-    sudo systemctl restart nginx
+    venv/bin/python app.py
     ```
-    *Neste ponto, `http://nemo-usp.org` deve estar funcionando (se o DNS tiver propagado).*
+6.  A aplicação estará disponível em [http://localhost:5000](http://localhost:5000).
 
-5.  **Instale o Certificado SSL (HTTPS):**
-    ```bash
-    sudo apt install certbot python3-certbot-nginx
-    ```
+## Criando um Usuário
+Para criar um novo usuário com permissões de gerenciamento de conteúdo, você pode usar o script `create_user.py`. Execute o seguinte comando e siga as instruções:
+```bash
+venv/bin/python create_user.py
+```
 
-6.  **Execute o Certbot:**
-    ```bash
-    sudo certbot --nginx -d nemo-usp.org -d www.nemo-usp.org
-    ```
-    * Siga as instruções: insira seu e-mail, concorde com os termos (`Y`), e **escolha a opção `2` (Redirecionar)** para forçar o HTTPS.
+## Estrutura do Projeto
 
-Seu site agora está no ar e seguro!
+-   `app.py`: O ponto de entrada principal para a aplicação Flask.
+-   `config.py`: Contém as configurações da aplicação.
+-   `models.py`: Define os modelos do banco de dados (ex., o modelo `User`).
+-   `routes.py`: Contém todas as funções de visualização e rotas da aplicação.
+-   `templates/`: Armazena todos os templates Jinja2 para o frontend da aplicação.
+-   `static/`: Contém todos os arquivos estáticos (CSS, JavaScript, imagens).
+-   `posts/`: O diretório raiz para todo o conteúdo baseado em Markdown.
+-   `Dockerfile`: A receita para construir a imagem Docker da aplicação.
+-   `gunicorn_config.py`: Configuração para o servidor web Gunicorn.
 
 ---
-
-## ## 🐛 Solução de Erros Comuns (Debugging)
-
-**Erro: `permission denied while trying to connect to the Docker daemon socket...`**
-* **Causa:** Você não tem permissão para usar o Docker.
-* **Solução:** Adicione seu usuário ao grupo `docker` com `sudo usermod -aG docker ${USER}` e, em seguida, **faça log out e log in novamente**. Como alternativa rápida, use `sudo` antes de todos os comandos `docker`.
-
-**Erro: `sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from string ''...''`**
-* **Causa:** Você usou aspas no seu arquivo `.env`.
-* **Solução:** Abra o `nano .env` e remova as aspas. Deve ser `CHAVE=VALOR`, não `CHAVE='VALOR'`.
-
-**Erro: `sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unable to open database file`**
-* **Causa 1:** O `DATABASE_URL` no `.env` está usando um caminho relativo (ex: `sqlite:///instance/posts.db`).
-* **Solução 1:** Use o caminho absoluto *dentro* do container: `DATABASE_URL=sqlite:////app/instance/posts.db`.
-* **Causa 2:** O container Docker não tem permissão para escrever na pasta `instance/` do host.
-* **Solução 2:** Execute `sudo chmod -R 777 instance/` no seu servidor (host).
-
-**Erro: `Conflict. The container name "/nemo-app-prod" is already in use...`**
-* **Causa:** Um container antigo e parado com esse nome já existe.
-* **Solução:** Remova o container antigo antes de iniciar um novo: `docker rm nemo-app-prod`.
-
-**Erro: `Certbot failed to authenticate... Type: unauthorized`**
-* **Causa:** Seus registros DNS no Porkbun ainda não estão apontando para o IP do seu servidor Vultr.
-* **Solução:** Siga o **Estágio 2** com cuidado. Aguarde 10-30 minutos para o DNS propagar. Você pode verificar com o comando `ping nemo-usp.org` (no seu PC local) para ver se o IP correto é exibido.
