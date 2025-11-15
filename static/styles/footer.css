@@ -1,0 +1,78 @@
+/* Replace all content in footer.css with this */
+
+.info-footer {
+    width: 100%;
+    padding: 20px 30px;
+    background-color: #d3efff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.footer-content-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 60px;
+}
+
+.links-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+}
+
+/* This is the new/updated block */
+.footer-link-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none; /* Removes underline */
+    color: rgb(24, 24, 24); /* Sets link color */
+    transition: opacity 0.3s ease; /* Smooth hover */
+}
+
+/* Hover effect */
+.footer-link-item:hover {
+    opacity: 0.7;
+}
+
+/* Centralized paragraph styling */
+.info-footer p {
+    font-weight: bold;
+    color: rgb(24, 24, 24);
+    margin: 0;
+}
+
+.footer-location {
+    text-align: right;
+    font-size: 0.9em;
+    color: #4a4a4a;
+}
+
+.footer-location p {
+    font-weight: normal;
+}
+
+.copyright {
+    text-align: center;
+}
+
+/* Icon Colors */
+.ig { color: #ac2bac; }
+.telegram-icon { color: rgb(42, 171, 238); }
+.mail-icon { color: rgb(229, 70, 70); }
+
+/* General Layout Rules */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+article {
+    flex-grow: 1;
+}

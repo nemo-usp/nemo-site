@@ -1,0 +1,101 @@
+{% extends './partials/base_layout.html' %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/separador.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/generic-pages.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/months-problems.css') }}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/video-size-adjust.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="div-separadora">
+    <h1 id="text-to-measure"> $\text{Problemas do Mês}$ </h1>
+    <video id="video-to-resize" autoplay muted playsinline>
+        <source src="{{ url_for('static', filename='videos/titles/months-problems.webm') }}" type="video/webm">
+    </video>
+</div>
+
+<div class="central-content">
+
+    <section class="about-months-problems">
+        <div class="about-text-content">
+            <h2>O'que são os Problemas do Mês?</h2>
+            <p>Os Problemas do Mês são um projeto do NEMO. Todo mês (pelo menos quando podemos ¯\_(ツ)_/¯) elaboramos e disponibilizamos um Problema de Matemática que tem um foco maior em pensamento lógico e criativo.</p>
+            <p>Quem enviar a melhor solução será creditado como o premiado, além de ter a solução publicada na página do problema. Para a melhor solução de São Carlos, o premiado tambêm ganha um giz hagoromo!</p>
+
+            <ul>
+                <li>
+                    <h3 style="font-size: 1.25rem;" >Quem pode participar?</h3>
+                    Quaisquer estudantes de graduação e do ensino medio e fundamental.
+                </li>
+                <li>
+                    <h3 style="font-size: 1.25rem;" >Como enviar a minha solução?</h3>
+                    Quando uma nova edição do Problema Mês é disponibilizada, soluções podem ser enviadas até o fim do mês por um forms acessível na página do problema.
+                </li>
+            </ul>
+
+            <p>Sinta-se livre para participar do Problema do Mês atual ou explorar os anteriores!</p>
+
+        </div>
+    </section>
+
+    {% if current_problem %}
+    <div class="problem-section current-problem-section">
+        <h2 class="section-title">Problema do Mês Atual</h2>
+        <a href="{{ url_for('view_post', path=current_problem.path) }}" class="problem-item open-problem">
+            {% if current_problem.meta.image %}
+            <div class="problem-item-img">
+                <img src="{{ url_for('static', filename=current_problem.meta.image) }}" alt="Problem Image">
+            </div>
+            {% endif %}
+            <div class="problem-item-info">
+                <h5>{{ current_problem.meta.title }}</h5>
+                <hr>
+                <p>{{ current_problem.meta.desc }}</p>
+                <hr>
+                <p class="status-open">Status: Em Aberto</p>
+            </div>
+            {# No solver info for open problems #}
+        </a>
+    </div>
+    {% else %}
+        <p class="no-current-problem">Não há problema do mês em aberto no momento.</p>
+    {% endif %}
+
+    {% if solved_problems %}
+    <div class="problem-section solved-problems-section">
+        <h2 class="section-title">Problemas Anteriores</h2>
+        <div class="problem-list">
+            {% for post in solved_problems %}
+                <a href="{{ url_for('view_post', path=post.path) }}" class="problem-item">
+                    {% if post.meta.image %}
+                    <div class="problem-item-img">
+                        <img src="{{ url_for('static', filename=post.meta.image) }}" alt="Problem Image">
+                    </div>
+                    {% endif %}
+                    <div class="problem-item-info">
+                        <h5>{{ post.meta.title }}</h5>
+                        <hr>
+                        <p>{{ post.meta.desc }}</p>
+                    </div>
+                    <div class="problem-item-solver">
+                        <p class="status-solved">Premiado:</p>
+                        {% if post.meta.solver_image %}
+                            <img src="{{ url_for('static', filename=post.meta.solver_image) }}" alt="Solver" class="solver-avatar">
+                        {% endif %}
+                        <p class="solver-name"><strong>{{ post.meta.solver_name }}</strong></p>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <hr>
+
+</div>
+{% endblock %}

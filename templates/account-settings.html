@@ -1,0 +1,74 @@
+{% extends './partials/base_layout.html' %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/separador.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/account-settings.css') }}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/video-size-adjust.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="div-separadora">
+    <video id="video-to-resize" autoplay muted playsinline>
+        <source src="{{ url_for('static', filename='videos/titles/settings.webm') }}" type="video/webm">
+    </video>
+    <h1 id="text-to-measure"> $\text{Configurações da Conta}$ </h1>
+</div>
+
+<div class="central-content">
+    
+    <div class="settings-container">
+        <form method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+            <div class="mb-4 text-center"> <p class="settings-section-title">Foto de Perfil</p>
+                {% if current_user.profile_image_path %}
+                    <img src="{{ url_for('static', filename=current_user.profile_image_path.replace('static/', '', 1)) }}" alt="Profile Picture" class="profile-pic-current">
+                {% else %}
+                    <img src="{{ url_for('static', filename='uploads/default_avatar.png') }}" alt="Default Profile Picture" class="profile-pic-current">
+                {% endif %}
+                
+                <div class="mt-2">
+                    <label for="profile_pic" class="form-label">Carregar nova foto:</label>
+                    <input type="file" class="form-control form-control-sm" name="profile_pic" id="profile_pic">
+                </div>
+            </div>
+            
+            <p class="settings-section-title">Informações Básicas</p>
+            <div class="mb-3">
+                <label for="name" class="form-label">Nome:</label>
+                <input type="text" class="form-control" name="name" id="name" value="{{ current_user.name or '' }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" name="email" id="email" value="{{ current_user.email }}">
+                <div id="emailHelp" class="form-text">Seu email de login. Certifique-se de que seja único.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="about_me" class="form-label">Sobre Mim:</label>
+                <textarea class="form-control" name="about_me" id="about_me" rows="4">{{ current_user.about_me or '' }}</textarea>
+            </div>
+
+            <p class="settings-section-title">Atualizar Senha</p>
+            <div class="mb-3">
+                <label for="password" class="form-label">Nova Senha:</label>
+                <input type="password" class="form-control" name="password" id="password">
+                <div id="passwordHelp" class="form-text">Deixe em branco para manter a senha atual.</div>
+            </div>
+
+            <p class="settings-section-title">Confirme Sua Identidade</p>
+            <div class="mb-4">
+                <label for="current_password" class="form-label">Senha Atual:</label>
+                <input type="password" class="form-control" name="current_password" id="current_password" required>
+                <div id="currentPasswordHelp" class="form-text">Necessário para salvar qualquer alteração.</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

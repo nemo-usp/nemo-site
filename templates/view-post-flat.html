@@ -1,0 +1,103 @@
+{% extends './partials/base_layout.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/post-content.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/view-post.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/accordion.css') }}">
+{% endblock %}
+
+{% block meta_tags %}
+    <meta property="og:title" content="{{ post.meta.title }}">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ request.url }}">
+    
+    <meta property="og:description" content="{{ post.meta.desc | striptags }}">
+    
+    {% if post.meta.image %}
+    <meta property="og:image" content="{{ request.host_url }}{{ url_for('static', filename=post.meta.image) }}">
+    {% endif %}
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ post.meta.title }}">
+    <meta name="twitter:description" content="{{ post.meta.desc | striptags }}">
+    {% if post.meta.image %}
+    <meta name="twitter:image" content="{{ request.host_url }}{{ url_for('static', filename=post.meta.image) }}">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<article class="post-container">
+
+    {% if logado %}
+        <a href="{{ url_for('post_editor', path=post.path) }}" class="edit-post-button">Editar Post</a>
+    {% endif %}
+
+    <header class="post-header" {% if post.meta.banner %} style="background-image: url('{{ url_for('static', filename=post.meta.banner) }}');"{% endif %}>
+        <div class="header-overlay">
+            <h1 class="post-title">{{ post.meta.title }}</h1>
+            <div class="post-meta">
+                <p class="post-desc"> {{ post.meta.desc }} </p>
+                {% if post.path.startswith('news/') %}
+                    <span class="meta-date">Publicado em {{ post.meta.date.strftime('%d/%m/%Y') }}</span>
+                    {% if author %}
+                        <span class="meta-author">por {{ author.name }}</span>
+                    {% endif %}
+                {% endif %}
+                {% if post.path.startswith('months-problems/') %}
+                    {% if post.meta.is_solved %}
+                        <span class="meta-status solved">Problema Resolvido</span>
+                    {% else %}
+                        <span class="meta-status open">Problema em Aberto</span>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <div class="post-body-wrapper">
+        <div class="post-body">
+            
+            {% if post.path.startswith('months-problems/') and post.meta.is_solved %}
+            <div class="solver-info">
+                {% if post.meta.solver_image %}
+                <img src="{{ url_for('static', filename=post.meta.solver_image) }}" alt="Foto de {{ post.meta.solver_name }}" class="solver-image">
+                {% endif %}
+                <h3 class="solver-name">Premiado: <br>{{ post.meta.solver_name }}</h3>
+            </div>
+            <hr class="solver-separator">
+            {% endif %}
+            
+            {{ post_html | safe }}
+
+            {% if solution_html %}
+            <hr class="solver-separator">
+            <div class="accordion" id="solutionAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingSolution">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution">
+                            Ver Solução
+                        </button>
+                    </h2>
+                    <div id="collapseSolution" class="accordion-collapse collapse" data-bs-parent="#solutionAccordion">
+                        <div class="accordion-body">
+                            {{ solution_html | safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% if post.path.startswith('months-problems/') and not post.meta.is_solved %}
+            <hr class="solver-separator">
+            <div class="submit-solution-container">
+                <h3>Tem uma solução?</h3>
+                <p>Envie sua resolução para concorrer a um giz hagoromo!</p>
+                <a href="{{ post.meta.link_forms }}" class="btn btn-success btn-lg" target="_blank" rel="noopener noreferrer">
+                    Enviar Solução
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</article>
+{% endblock %}

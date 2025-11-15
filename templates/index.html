@@ -1,0 +1,159 @@
+{% extends './partials/base_layout.html' %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/indexpage.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/post-summary.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/swiper.css') }}">
+{% endblock %}
+
+{% block meta_tags %}
+    <meta property="og:title" content="NEMO - Núcleo de Estudos de Matemática Olímpica">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    
+    <meta property="og:description" content="Bem-vindos ao site do NEMO. O NEMO é um grupo de extensão do ICMC, sediado na USP de São Carlos, cujo foco é realizar treinamentos para olimpíadas de matemática universitárias.">
+    
+    <meta property="og:image" content="{{ request.host_url }}{{ url_for('static', filename='imgs/site-nemo.webp') }}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NEMO - Núcleo de Estudos de Matemática Olímpica">
+    <meta name="twitter:description" content="Bem-vindos ao site do NEMO. O NEMO é um grupo de extensão do ICMC, sediado na USP de São Carlos, cujo foco é realizar treinamentos para olimpíadas de matemática universitárias.">
+    <meta name="twitter:image" content="{{ request.host_url }}{{ url_for('static', filename='imgs/site-nemo.webp') }}">
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/swiper-init.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="logocominfo">
+    <video autoplay muted>
+        <source src="{{ url_for('static', filename='/videos/FishCurve.webm') }}" type="video/webm">
+        Seu navegador não suporta vídeos!
+    </video>
+    <div class="textos-logo">
+        <p>Núcleo de Estudos de Matemática Olímpica</p>
+    </div>
+    
+</div>
+
+<div class="conteudo">
+    <div class="tab-container">
+        <ul class="nav nav-tabs" id="introTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="about-us-tab" data-bs-toggle="tab" data-bs-target="#about-us-pane" type="button" role="tab" aria-selected="true">
+                    Sobre Nós
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="olympiads-tab" data-bs-toggle="tab" data-bs-target="#olympiads-pane" type="button" role="tab" aria-selected="false">
+                    O que são as Olimpíadas?
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="introTabsContent">
+            <div class="tab-pane fade show active" id="about-us-pane" role="tabpanel">
+                <div class="tab-pane-content">
+                    <div class="tab-text-content">
+                        <h1>Sobre Nós</h1>
+                        <p>O <strong>NEMO</strong> é um grupo de extensão do ICMC, sediado na USP de São Carlos, cujo foco é realizar
+                            <strong>treinamentos para olimpíadas de matemática universitárias</strong>.
+                        </p>
+                        <p>Realizamos encontros semanais durante os quais listas de problemas de matemática olímpica são
+                            discutidos e resolvidos. Acreditamos que, quando todos estão trabalhando nesses problemas,
+                            ideias de várias pessoas se combinam para dar origem a uma solução. Por isso, <b>todos são
+                                bem-vindos</b> a participar dos nossos encontros.
+                            </p>
+                        <a role="button" class="btn btn-outline-primary" href="/about"> Saiba mais </a>
+                    </div>
+                    <div class="tab-image-container">
+                        <img src="{{ url_for('static', filename='imgs/index-imgs/about-us.webp') }}" alt="Membros do NEMO premiados na IMC 2022">
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="olympiads-pane" role="tabpanel">
+                <div class="tab-pane-content">
+                    <div class="tab-image-container">
+                        <img src="{{ url_for('static', filename='imgs/index-imgs/obm-2017-medalhas.webp') }}" alt="Medalhas da Olimpíada Brasileira de Matemática">
+                    </div>
+                    <div class="tab-text-content">
+                        <h1>Sobre as Olimpíadas</h1>
+                        <p>Olimpíadas de matemática são competições de matemática que desafiam os competidores a resolverem
+                            problemas mais difíceis que aqueles tipicamente utilizados em provas normais, isto é, aquelas
+                            que testam conhecimentos específicos.</p>
+                        <p>Diferentemente dessas provas, os problemas das olimpíadas envolvem o <strong> uso de argumentos
+                                matemáticos de maneira criativa e esperta, o que faz com que sejam muito
+                                divertidos</strong>.</p>
+                        <a role="button" class="btn btn-outline-primary" href="/about#como-sao-problemas"> Saiba mais </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="noticias">
+        <section class="latest-news">
+            <h2 class="section-title">Últimas Notícias</h2>
+            
+            <div class="slider-wrapper">
+                
+                <div class="swiper-button-prev index-prev"></div>
+
+                <div id="indexSwiper" class="slide-container swiper">
+                    <div class="swiper-wrapper"> 
+                        {% for post in news_posts %}
+                            <div class="swiper-slide"> 
+                                <div class="resumo-post h-100"> 
+                                    <a href="{{ url_for('view_post', path=post.path) }}" class="d-flex flex-column h-100" style="text-decoration: none; color: inherit;">
+                                        {% if post.meta.image %}
+                                        <div class="post-img-container">
+                                            <img src="{{ url_for('static', filename=post.meta.image) }}" alt="Post Image">
+                                        </div>
+                                        {% endif %}
+                                        <div class="post-resumo-texto">
+                                            <h4>{{ post.meta.title }}</h4>
+                                            <p>{{ post.meta.desc }}</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="swiper-pagination index-pagination"></div>
+                </div>
+
+                <div class="swiper-button-next index-next"></div>
+
+            </div>
+
+            <div class="button-container view-all-container">
+                <a href="/news" class="btn btn-outline-primary btn-lg show-more-btn">Ver Todas as Publicações</a>
+            </div>
+
+        </section>
+    </div>
+
+    <div class="ultimo-problema-mes">
+        {% if problem_post %}
+        <section class="problem-showcase">
+            {% if problem_post.meta.image %}
+            <div class="problem-image-container">
+                <img src="{{ url_for('static', filename=problem_post.meta.image) }}" alt="Problema do Mês">
+            </div>
+            {% endif %}
+            <div class="problem-content">
+                <h2 class="section-title">Problema do Mês</h2>
+                <h3 class="problem-title">{{ problem_post.meta.title }}</h3>
+                <p class="problem-desc">{{ problem_post.meta.desc }}</p>
+                <a href="{{ url_for('view_post', path=problem_post.path) }}" class="btn btn-outline-light btn-lg">Ver Problema Completo</a>
+            </div>
+        </section>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

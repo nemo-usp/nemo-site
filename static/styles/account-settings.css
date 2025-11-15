@@ -1,0 +1,81 @@
+/* --- 1. Main Settings Container --- */
+.settings-container {
+    max-width: 700px; /* Wider than login, suitable for settings */
+    margin: 40px auto; /* Adds space from the header and centers */
+    padding: 40px;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.settings-container h2 {
+    text-align: center;
+    font-weight: bold;
+    color: #070f43;
+    margin-bottom: 30px;
+}
+
+/* --- 2. Form Styling (using Bootstrap classes) --- */
+.settings-container .form-label {
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.settings-container .form-control,
+.settings-container .form-control-file {
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    width: 100%; /* Ensure inputs take full width */
+}
+
+.settings-container textarea.form-control {
+    min-height: 120px; /* Give textarea more space */
+}
+
+.settings-container .form-control:focus {
+    border-color: #a6e1ff;
+    box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
+}
+
+.settings-container .form-text {
+    font-size: 0.85em;
+    color: #6c757d;
+}
+
+/* --- 3. Profile Picture Section --- */
+.profile-pic-current {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* Make it circular */
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 3px solid #dee2e6;
+}
+
+/* --- 4. Submit Button --- */
+.settings-container .btn-primary {
+    width: 100%;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 12px;
+    background-color: #070f43;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.settings-container .btn-primary:hover {
+    background-color: #0d6efd;
+}
+
+/* --- 5. Section Separators --- */
+.settings-section-title {
+    font-weight: bold;
+    color: #495057;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+}

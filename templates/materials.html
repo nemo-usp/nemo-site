@@ -1,0 +1,72 @@
+{% extends './partials/base_layout.html' %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/separador.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/generic-pages.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/materials.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/accordion.css') }}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/video-size-adjust.js') }}"></script>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="div-separadora">
+
+    <h1 id="text-to-measure"> $\text{Materiais}$ </h1>
+
+    <video id="video-to-resize" autoplay muted playsinline>
+        <source src="{{ url_for('static', filename='videos/titles/materials.webm') }}" type="video/webm">
+    </video>
+
+</div>
+
+<div class="central-content">
+    <div class="materials-section">
+        <h2 class="section-title">Listas e Materiais dos Encontros</h2>
+
+        {% if logado %}
+        <div style="text-align: center; margin-bottom: 30px;">
+            <a href="{{ url_for('manage_materials') }}" class="btn btn-primary">
+                Gerenciar Materiais
+            </a>
+        </div>
+        {% endif %}
+
+        <div class="accordion" id="materialsAccordion">
+
+            {% for item in materials %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-{{ item.id }}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#collapse-{{ item.id }}" aria-expanded="false" aria-controls="collapse-{{ item.id }}">
+                        {{ item.title }}
+                    </button>
+                </h2>
+                <div id="collapse-{{ item.id }}" class="accordion-collapse collapse" 
+                     aria-labelledby="heading-{{ item.id }}" data-bs-parent="#materialsAccordion">
+                    <div class="accordion-body">
+                        <p>{{ item.description }}</p>
+                        <a href="{{ url_for('static', filename=item.pdf_path) }}" 
+                           class="btn btn-primary download-btn" download>
+                            Download do Material (PDF)
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if not materials %}
+            <p style="text-align: center;">Nenhum material foi publicado ainda.</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <hr>
+    
+</div>
+{% endblock %}

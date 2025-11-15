@@ -1,0 +1,185 @@
+.about-months-problems {
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+    flex: 1; /* Takes up 50% of the space */
+}
+
+/* Shared styles for main and sub-headings */
+.about-months-problems h2 {
+    font-weight: bold;
+    color: #070f43;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.about-months-problems p, li {
+    font-size: 1rem;
+    margin-bottom: 2px;
+}
+
+/* --- 1. MAIN PROBLEM ITEM STYLES --- */
+.problem-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 15px 10px;
+    border-bottom: 1px solid #dee2e6;
+    text-decoration: none;
+    color: #212529;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.problem-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Styles for the larger, open problem at the top */
+.open-problem .problem-item-img {
+    width: 300px;
+    height: 300px;
+}
+
+.open-problem .problem-item-info h5 {
+    font-size: 1.5em; /* Make the title larger */
+}
+
+
+/* --- 2. INTERNAL COMPONENT STYLES --- */
+.problem-item-img {
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0; /* Prevents the image from shrinking */
+}
+
+.problem-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.problem-item-info {
+    flex-grow: 1; /* Allows the info section to take up remaining space */
+}
+
+.problem-item-info h5 {
+    margin: 0 0 5px 0;
+}
+
+.problem-item-info p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #101010;
+    white-space: pre-wrap;
+}
+
+.problem-item-solver {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: right;
+}
+
+
+/* --- 3. STATUS INDICATORS --- */
+.status-solved {
+    color: #198754;
+    font-weight: bold;
+    font-size: large;
+    margin-right: 55px;
+}
+
+.status-open {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+
+/* --- 4. RESPONSIVE ADJUSTMENTS FOR MOBILE --- */
+@media (max-width: 768px) {
+    .problem-item {
+        flex-direction: column; /* Stacks items vertically */
+        align-items: center;    /* Centers everything horizontally */
+        text-align: center;
+    }
+
+    .problem-item-img {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        margin-bottom: 15px;
+    }
+
+    .problem-item-solver {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .problem-item-solver img,
+    .problem-item-solver p {
+        margin-right: 0;
+    }
+}
+
+/* --- 5. NEW SECTION STYLES --- */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #a6e1ff;
+    color: #070f43;
+    text-align: center;
+}
+
+.problem-section + .problem-section {
+    margin-top: 60px; /* Add space between the current and previous sections */
+}
+
+.no-current-problem {
+    text-align: center;
+    font-style: italic;
+    color: #6c757d;
+    margin-bottom: 40px;
+}
+
+/* Optional: Add slight background to current problem section */
+.current-problem-section {
+    background-color: #f8f9fa; /* Light grey */
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 60px; /* Space below current problem */
+}
+/* Ensure title inside this section is also centered */
+.current-problem-section .section-title {
+    margin-top: 0; 
+}
+
+/* Adjustments for solver display */
+.solver-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    margin-bottom: 5px;
+    margin-right: 50px; /* Keep margin for desktop */
+}
+
+.solver-name {
+    margin-right: 50px; /* Keep margin for desktop */
+    font-size: large;
+    max-width: 150px;
+    text-align: center;
+    white-space: pre-wrap;
+}
+
+/* Ensure mobile solver styles override desktop margins */
+@media (max-width: 768px) {
+    .solver-avatar,
+    .solver-name {
+        margin-right: 0;
+        max-width: 300px;
+    }
+}
+
+

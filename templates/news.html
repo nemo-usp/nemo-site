@@ -1,0 +1,119 @@
+{% extends './partials/base_layout.html' %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/separador.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/post-summary.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/generic-pages.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/news.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/swiper.css') }}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/video-size-adjust.js') }}"></script>
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/swiper-init.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="div-separadora">
+
+    <h1 id="text-to-measure"> $\text{Notícias e Premiações}$ </h1>
+
+    <video id="video-to-resize" autoplay muted playsinline>
+        <source src="{{ url_for('static', filename='videos/titles/news.webm') }}" type="video/webm">
+    </video>
+
+</div>
+
+<div class="central-content">
+    
+    {% if award_posts %}
+    <div class="news-section awards-section">
+        <h2 class="section-title">Prêmios e Conquistas</h2>
+        
+        <div class="slider-wrapper"> 
+            <div class="swiper-button-prev awards-prev"></div> 
+
+            <div id="awardsSwiper" class="slide-container swiper"> 
+                <div class="swiper-wrapper">
+                    {% for post in award_posts %} 
+                        <div class="swiper-slide"> 
+                            <div class="resumo-post h-100"> 
+                                <a href="{{ url_for('view_post', path=post.path) }}" class="d-flex flex-column h-100" style="text-decoration: none; color: inherit;">
+                                    {% if post.meta.image %}
+                                    <div class="post-img-container">
+                                        <img src="{{ url_for('static', filename=post.meta.image) }}" alt="Post Image">
+                                    </div>
+                                    {% endif %}
+                                    <div class="post-resumo-texto">
+                                        <h4>{{ post.meta.title }}</h4>
+                                        <p>{{ post.meta.desc }}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="swiper-pagination awards-pagination"></div> 
+            </div>
+
+            <div class="swiper-button-next awards-next"></div> 
+        </div>
+
+        <div class="button-container">
+            <a href="/news-awards" class="btn btn-outline-primary btn-lg show-more-btn">Veja mais</a>
+        </div>
+
+    </div>
+    {% endif %}
+
+    {% if other_news_posts %}
+    <div class="news-section">
+        <h2 class="section-title">Notícias Gerais</h2>
+
+        <div class="slider-wrapper"> 
+            <div class="swiper-button-prev other-prev"></div> 
+
+            <div id="otherNewsSwiper" class="slide-container swiper"> 
+                <div class="swiper-wrapper">
+                    {% for post in other_news_posts %} 
+                        <div class="swiper-slide">
+                           <div class="resumo-post h-100">
+                                <a href="{{ url_for('view_post', path=post.path) }}" class="d-flex flex-column h-100" style="text-decoration: none; color: inherit;">
+                                    {% if post.meta.image %}
+                                    <div class="post-img-container">
+                                        <img src="{{ url_for('static', filename=post.meta.image) }}" alt="Post Image">
+                                    </div>
+                                    {% endif %}
+                                    <div class="post-resumo-texto">
+                                        <h4>{{ post.meta.title }}</h4>
+                                        <p>{{ post.meta.desc }}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="swiper-pagination other-pagination"></div> 
+            </div>
+            
+            <div class="swiper-button-next other-next"></div> 
+        </div>
+
+        <div class="button-container">
+            <a href="/news-general" class="btn btn-outline-primary btn-lg show-more-btn">Veja mais</a>
+        </div>
+
+    </div>
+    {% endif %}
+
+    {% if not award_posts and not other_news_posts %}
+        <p style="text-align: center; margin-top: 40px;">Nenhuma notícia publicada no momento.</p>
+    {% endif %}
+
+    <hr>
+
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+<div class="modal fade" id="mediaLibraryModal" tabindex="-1" aria-labelledby="mediaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mediaModalLabel">Media Library</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="media-upload-container">
+          <h6>Upload Novo Arquivo</h6>
+          <form id="media-upload-form">
+            <div class="input-group">
+              <input type="file" class="form-control" id="media-upload-file" required>
+              <button class="btn btn-primary" type="submit" id="media-upload-btn">Upload</button>
+            </div>
+            <div id="media-status-text" class="form-text"></div>
+          </form>
+        </div>
+
+        <hr>
+
+        <h6>Mídia Existente (Clique para inserir)</h6>
+        <div id="media-grid" class="media-grid-container">
+          <p>Loading...</p>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

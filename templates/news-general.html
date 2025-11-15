@@ -1,0 +1,55 @@
+{% extends './partials/base_layout.html' %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/separador.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/generic-pages.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/news.css') }}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/video-size-adjust.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="div-separadora">
+    <h1 id="text-to-measure"> $\text{Notícias Gerais}$ </h1>
+    <video id="video-to-resize" autoplay muted playsinline>
+        <source src="{{ url_for('static', filename='videos/titles/news-general.webm') }}" type="video/webm">
+    </video>
+</div>
+
+<div class="central-content">
+    
+    {% if other_news_posts %}
+        <div class="news-list-container">
+            
+            {% for post in other_news_posts %}
+                
+                <a href="{{ url_for('view_post', path=post.path) }}" class="news-list-item">
+                    
+                    {% if post.meta.image %}
+                    <div class="news-item-img">
+                        <img src="{{ url_for('static', filename=post.meta.image) }}" alt="Post Image">
+                    </div>
+                    {% endif %}
+
+                    <div class="news-item-info">
+                        <h4>{{ post.meta.title }}</h4>
+                        <p>{{ post.meta.desc }}</p>
+                    </div>
+
+                    <div class="news-item-meta">
+                        <span>{{ post.meta.date.strftime('%d/%m/%Y') }}</span>
+                    </div>
+
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center; margin-top: 40px; font-size: 1.1em;">Nenhuma notícia publicada no momento.</p>
+    {% endif %}
+
+    <hr>
+</div>
+{% endblock %}

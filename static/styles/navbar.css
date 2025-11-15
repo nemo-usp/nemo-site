@@ -1,0 +1,91 @@
+/* --- 1. MAIN NAVIGATION BAR --- */
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: background-color 0.5s;
+    background-color: rgb(253, 246, 241); 
+}
+
+
+/* --- 2. HOVER EFFECT --- */
+/* This pseudo-element creates the gradient overlay */
+nav::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #d3efff 70%, transparent 100%);
+    background-color: rgba(253, 246, 241, 0);
+    opacity: 0; /* Starts transparent */
+    transition: opacity 0.5s;
+    z-index: -1; /* Sits behind the nav content */
+}
+
+/* This fades the gradient in on hover */
+nav:hover::before {
+    opacity: 1;
+}
+
+
+/* --- 3. BRAND ICON --- */
+span.nemo-icon {
+    background-image: url('../imgs/fotonemo.webp');
+    background-size: contain;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+}
+
+
+/* --- 4. ACTIVE LINK STYLING --- */
+.navbar-nav .nav-link.active {
+    background-color: #a6e1ff;
+    color: rgb(7, 15, 67) !important;
+    border-radius: 8px;
+    text-shadow: none;
+}
+
+
+/* --- 5. RESPONSIVE ADJUSTMENTS --- */
+@media only screen and (min-width: 500px) {
+    nav {
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+}
+
+/* --- 6. MOBILE-SPECIFIC STYLES --- */
+@media (max-width: 767.98px) { 
+    /* This targets screens smaller than the 'md' breakpoint (where it collapses) */
+
+    /* 1. Adds padding to the main navbar bar (brand + button) on mobile */
+    nav.navbar {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    /* 2. Centers the links in the collapsed menu */
+    .navbar-collapse .navbar-nav {
+        /* This centers the <li> elements */
+        align-items: center;
+        
+        /* Overrides the 'ms-auto' (margin-left: auto) on the main link list
+           so it doesn't get pushed to the right before centering */
+        margin-left: 0 !important;
+    }
+
+    /* 3. Ensures the text inside each link is also centered */
+    .navbar-collapse .nav-item {
+        text-align: center;
+    }
+
+    .navbar-collapse .nav-link.active {
+        display: inline-block; /* Makes the element shrink-to-fit its content */
+        padding-left: 0.7rem;  /* Adds more horizontal padding */
+        padding-right: 0.7rem; /* Adds more horizontal padding */
+    }
+
+}

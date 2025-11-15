@@ -1,0 +1,24 @@
+/* --- 1. SHARED PAGE STYLES --- */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #a6e1ff;
+    color: #070f43;
+    text-align: center;
+}
+
+
+/* --- 2. FAQ-SPECIFIC STYLES --- */
+.img-olimpiada {
+    display: block;
+    margin: 5px auto 15px auto; /* Centered with more space at the bottom */
+    width: min(70%, 200px);
+    height: auto;
+}
+
+.img-olimpiada img {
+    width: 100%;
+    border-radius: 5px; /* Added for a softer look */
+}

@@ -1,0 +1,67 @@
+/* --- 1. General Admin Page Layout --- */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #a6e1ff;
+    color: #070f43;
+    text-align: center;
+}
+
+/* --- 2. Main Editor Container --- */
+.editor-container {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    overflow: hidden; /* Contains the editor borders */
+}
+
+/* --- 3. Editor Header (Bootstrap-powered) --- */
+.editor-header {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Ensure labels are bold */
+.editor-header .form-label {
+    font-weight: 500;
+    margin-bottom: .5rem;
+    font-size: 0.9em;
+    color: #343a40;
+}
+
+/* Style the buttons */
+.editor-header .btn {
+    font-weight: 500;
+    width: 100%; /* Full width on mobile */
+}
+
+/* --- 4. EasyMDE Editor Styles --- */
+.EasyMDEContainer {
+    border: none; /* Remove default border, as it's in .editor-container */
+}
+
+.EasyMDEContainer .CodeMirror {
+    /* Set a min-height so the editor is always usable */
+    min-height: 600px; 
+}
+
+.editor-toolbar {
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* --- 5. Upload Status --- */
+#upload-status {
+    font-size: 0.9em;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+#upload-status input {
+    width: 250px; 
+    font-size: 0.9em;
+}

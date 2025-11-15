@@ -1,0 +1,25 @@
+/* --- Custom Accordion Styles --- */
+.accordion-item {
+    border: 1px solid #dee2e6;
+    border-radius: .25rem;
+    margin-bottom: 10px;
+}
+
+.accordion-button {
+    font-weight: 600;
+    color: #070f43;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #d3efff;
+    color: #070f43;
+    box-shadow: inset 0 -1px 0 rgba(0,0,0,.125);
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
+}
+
+.accordion-body {
+    padding: 20px;
+}

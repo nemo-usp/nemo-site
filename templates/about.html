@@ -1,0 +1,225 @@
+{% extends './partials/base_layout.html' %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/separador.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/generic-pages.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/accordion.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/about.css') }}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/video-size-adjust.js') }}"></script>
+{% endblock %}
+
+
+{% block content %}
+<div class="div-separadora">
+
+    <h1 id="text-to-measure"> $\text{Sobre}$ </h1>
+
+    <video id="video-to-resize" autoplay muted playsinline>
+        <source src="{{ url_for('static', filename='videos/titles/about.webm') }}" type="video/webm">
+    </video>
+
+</div>
+
+<div class="central-content">
+
+    <section class="about-section about-intro" id="quem-somos">
+        <div class="about-text-content">
+            <h2>Quem somos?</h2>
+            <p>Nós, membros do Núcleo de Estudos de Matemática Olímpica (NEMO), somos pessoas interessadas na diversão proporcionada pela busca por soluções criativas e espertas de problemas de olimpíadas de matemática.</p>
+            <p>Como amantes da matemática, gostamos fazer e ouvir explicações de conceitos e problemas matemáticos e, por isso, todos são bem-vindos a participar das nossas aulas e trocar experiências e aprendizados conosco!</p>
+        </div>
+        <div class="about-image-container">
+            <img src="{{ url_for('static', filename='imgs/index-imgs/about-us.webp') }}" alt="Foto do grupo NEMO">
+        </div>
+    </section>
+
+    <div class="accordion mt-4" id="teamAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTeam">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTeam">
+                    Conheça a Equipe
+                </button>
+            </h2>
+            <div id="collapseTeam" class="accordion-collapse collapse" data-bs-parent="#teamAccordion">
+                <div class="accordion-body">
+
+                    <h4 class="team-subheading">Membros da Banca</h4>
+                    <div class="team-grid">
+                        <div class="member-card">
+                            <img src="{{ url_for('static', filename='imgs/members/arjuna-ramires.jpg') }}" alt="Foto de Membro">
+                            <div class="member-info">
+                                <h5 class="member-name">Arjuna Ramires</h5>
+                                <p class="member-email"></p>
+                            </div>
+                        </div>
+                        <div class="member-card">
+                            <img src="{{ url_for('static', filename='imgs/members/mateus-blanco.jpg') }}" alt="Foto de Membro">
+                            <div class="member-info">
+                                <h5 class="member-name">Mateus Blanco de Sousa</h5>
+                                <p class="member-email">mateusblancos@usp.br</p>
+                            </div>
+                        </div>
+                        <div class="member-card">
+                            <img src="{{ url_for('static', filename='imgs/members/christian-bernard.jpg') }}" alt="Foto de Membro">
+                            <div class="member-info">
+                                <h5 class="member-name">Christian Bernard</h5>
+                                <p class="member-email"></p>
+                            </div>
+                        </div>
+                        <div class="member-card">
+                            <img src="{{ url_for('static', filename='imgs/members/arthur-queiroz.jpg') }}" alt="Foto de Membro">
+                            <div class="member-info">
+                                <h5 class="member-name">Arthur Queiroz</h5>
+                                <p class="member-email">arthurqm@usp.br</p>
+                            </div>
+                        </div>
+                        <div class="member-card">
+                            <img src="{{ url_for('static', filename='imgs/members/bruno-matheus.jpg') }}" alt="Foto de Membro">
+                            <div class="member-info">
+                                <h5 class="member-name">Bruno Matheus</h5>
+                                <p class="member-email"></p>
+                            </div>
+                        </div>
+                        <div class="member-card">
+                            <img src="{{ url_for('static', filename='imgs/members/gabriel-libardi.jpg') }}" alt="Foto de Membro">
+                            <div class="member-info">
+                                <h5 class="member-name">Gabriel Libardi</h5>
+                                <p class="member-email">gflibardi@gmail.com</p>
+                            </div>
+                        </div>
+                        <div class="member-card">
+                            <img src="{{ url_for('static', filename='imgs/members/vinicius-arcanjo.jpg') }}" alt="Foto de Membro">
+                            <div class="member-info">
+                                <h5 class="member-name">Vinícius Arcanjo</h5>
+                                <p class="member-email">viniarcanfonseolive@usp.br</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--
+                    <h4 class="team-subheading">Membros Anteriores</h4>
+                    <div class="team-grid">
+                        <div class="member-card">
+                            <img src="{{ url_for('static', filename='uploads/default_avatar.png') }}" alt="Foto de Membro">
+                            <div class="member-info">
+                                <h5 class="member-name">Nome do Membro</h5>
+                                <p class="member-email">membro.d@usp.br</p>
+                            </div>
+                        </div>
+                        <div class="member-card">
+                            <img src="{{ url_for('static', filename='uploads/default_avatar.png') }}" alt="Foto de Membro">
+                            <div class="member-info">
+                                <h5 class="member-name">Nome do Membro</h5>
+                                <p class="member-email">membro.e@usp.br</p>
+                            </div>
+                        </div>
+                        <div class="member-card">
+                            <img src="{{ url_for('static', filename='uploads/default_avatar.png') }}" alt="Foto de Membro">
+                            <div class="member-info">
+                                <h5 class="member-name">Nome do Membro</h5>
+                                <p class="member-email">membro.f@usp.br</p>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <section class="about-section" id="quais-atividades-nemo">
+        <h2>Quais as atividades do NEMO?</h2>
+        <p>Além de <strong><a href="#quais-olimpiadas">competirmos em olimpíadas</a></strong> e realizarmos os <strong><a href="/faq#encontros-semanais">encontros semanais</a></strong> para a resolução de listas semanais com problemas selecionados pela coordenação, realizamos o <strong><a href="/months-problems">projeto Problema do Mês</a></strong>.</p>
+    </section>
+
+    <section class="about-section problem-example" id="como-sao-problemas">
+        <h2>Como são os problemas de olimpíadas de matemática?</h2>
+        <p>São problemas que podem ser resolvidos através de ideias simples usadas em conjunto de maneira criativa. Eis um exemplo:</p>
+        
+        <p class="problem-statement"><i><b>Qual o maior número de reis que podem ser colocados num tabuleiro de xadrez sem que eles fiquem em xeque?</b></i></p>
+        
+        <div class="row justify-content-center g-4 my-4">
+
+            <div class="col-lg-4 col-md-6 text-center">
+                <img src="{{ url_for('static', filename='imgs/about-imgs/xadrez_invalido1.png') }}" alt="Arranjo de xadrez inválido" class="img-fluid rounded border chess-image">
+                <p class="mt-2 fst-italic text-muted">Arranjo <span style="color: red;">inválido</span>, pois os reis estão na diagonal.</p>
+            </div>
+
+            <div class="col-lg-4 col-md-6 text-center">
+                <img src="{{ url_for('static', filename='imgs/about-imgs/xadrez_invalido2.png') }}" alt="Arranjo de xadrez inválido" class="img-fluid rounded border chess-image">
+                <p class="mt-2 fst-italic text-muted">Arranjo <span style="color: red;">inválido</span>, pois os reis estão lado a lado.</p>
+            </div>
+
+            <div class="col-lg-4 col-md-6 text-center">
+                <img src="{{ url_for('static', filename='imgs/about-imgs/xadrez_valido.png') }}" alt="Arranjo de xadrez válido" class="img-fluid rounded border chess-image">
+                <p class="mt-2 fst-italic text-muted">Arranjo <span style="color: green;">válido</span>, pois nenhum rei ameaça outro.</p>
+            </div>
+
+        </div>
+
+        <p>Antes de ver a solução, é imprescindível que <b>você mesmo tente</b> resolver! Use <b><a href="https://lichess.org/editor/8/8/8/8/8/8/8/8_w_-_-_0_1?color=white" target="_blank">este site</a></b> para testar suas ideias.</p>
+
+            <div class="accordion" id="solutionAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingSolution">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution">
+                            Clique para mostrar a resolução
+                        </button>
+                    </h2>
+                    <div id="collapseSolution" class="accordion-collapse collapse" data-bs-parent="#solutionAccordion">
+                        <div class="accordion-body">
+                            
+                            <h2>Se você não tentou, tente!!!</h2>
+
+                            <div class="accordion" id="realSolutionAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingRealSolution">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRealSolution">
+
+                                            <h1 class="fst-italic"> Clique se realmente tentou!</h1>
+
+                                            <img src="{{ url_for('static', filename='imgs/about-imgs/mr-fresh.png') }}" class="img-fluid rounded" style="width: 130px;">
+                                            
+                                        </button>
+                                    </h2>
+                                    <div id="collapseRealSolution" class="accordion-collapse collapse" data-bs-parent="#realSolutionAccordion">
+                                        <div class="accordion-body">
+                                            <p><b>Solução sugerida:</b> Considere a seguinte divisão do tabuleiro em 16 caixinhas 2x2:</p>
+                                            <img src="{{ url_for('static', filename='imgs/about-imgs/xadrez-sol.png') }}" alt="Tabuleiro dividido" class="img-xadrez">
+                                            <p>Note que é impossível que existam 2 reis numa mesma caixinha... Como existem 16 caixinhas, existem, no máximo, 16 reis no tabuleiro.</p>
+                                            <p>Agora, observe a configuração abaixo, que possui 16 reis:</p>
+                                            <img src="{{ url_for('static', filename='imgs/about-imgs/xadrez-exemplo-16.png') }}" alt="Exemplo com 16 reis" class="img-xadrez">
+                                            <p>Se provamos que o máximo é 16 e demos um exemplo com 16, então a resposta só pode ser 16. $\blacksquare$</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+    
+    <section class="about-section" id="quais-olimpiadas">
+        <h2>De quais olimpíadas o NEMO participa?</h2>
+        <p>Os integrantes do NEMO participam de várias olimpíadas, sejam elas nacionais ou internacionais. As principais são:</p>
+        <ul>
+            <li>Olimpíada Brasileira de Matemática (OBM)</li>
+            <li>Competição Elon Lages Lima de Matemática (CELL)</li>
+            <li>International Mathematics Competition (IMC)</li>
+            <li>Competencia Iberoamericana Interuniversitaria de Matemáticas (CIIM)</li>
+        </ul>
+        <p>Mais informações sobre cada uma delas podem ser encontradas no <a href="/faq">FAQ</a>.</p>
+    </section>
+    
+    <section class="about-section">
+        <h2>Como ingressar no NEMO?</h2>
+        <p>Não existe processo de ingresso! Basta colar nos encontros semanais que der pra você ir que você já é considerado membro do NEMO. O horário é decidido no início do ano por enquete no nosso <a href="https://t.me/nemoavisos" target="_blank">canal de avisos do Telegram</a>.</p>
+    </section>
+
+</div>
+{% endblock %}

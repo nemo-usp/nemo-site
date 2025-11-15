@@ -1,0 +1,49 @@
+{% extends './partials/base_layout.html' %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/separador.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/generic-pages.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/drafts.css') }}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/video-size-adjust.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="div-separadora">
+    <video id="video-to-resize" autoplay muted playsinline>
+        <source src="{{ url_for('static', filename='videos/titles/drafts.webm') }}" type="video/webm">
+    </video>
+
+    <h1 id="text-to-measure" class="fade-in-text"> $\text{Rascunhos}$ </h1>
+</div>
+
+<div class="central-content">
+
+    {% if post_list %}
+        <div class="draft-list">
+            {% for post in post_list %}
+                <div class="draft-item">
+
+                    {% if post.meta.image %}
+                    <div class="draft-item-img">
+                        <img src="{{ url_for('static', filename=post.meta.image) }}" alt="Post Image">
+                    </div>
+                    {% endif %}
+                    <a class="draft-link" href="{{ url_for('post_editor', path=post.path) }}">
+                        <h5>{{ post.meta.title }}</h5>
+                        <p>{{ post.meta.desc }}</p>
+                    </a>
+                    <form action="{{ url_for('delete_post_file', path=post.path) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja deletar este rascunho? Esta ação não pode ser desfeita.');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type="submit" class="delete-button" title="Deletar Rascunho">Deletar</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center; margin-top: 30px;">Você não tem rascunhos.</p>
+    {% endif %}
+</div>
+{% endblock %}

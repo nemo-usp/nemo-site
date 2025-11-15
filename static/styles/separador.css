@@ -1,0 +1,22 @@
+/* 1. Create the positioning context on the parent */
+.div-separadora {
+    position: relative; /* This is the most important part! */
+    /* You can add other styles here like width, height, or padding */;
+    height: 90px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background-color: rgb(253, 246, 241)
+}
+
+/* 3. Position the video to cover the parent perfectly */
+.div-separadora video {
+  position: absolute; /* Allows JS to control its position on the page */
+  left: 50%; /* Move the video's left edge to the center of the screen/parent */
+  transform: translate(-50%, -50%); /* Crucial: Shifts the video back by half its own width and height, effectively centering it */
+  z-index: 0;
+}
+.div-separadora h1 {
+    color: transparent;
+    z-index: 1;          /* Ensure it's above the video */
+}

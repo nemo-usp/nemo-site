@@ -1,0 +1,17 @@
+/* --- 1. Section Title --- */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #a6e1ff;
+    color: #070f43;
+    text-align: center;
+}
+
+/* --- 2. Download Button --- */
+.download-btn {
+    margin-top: 15px;
+    display: inline-block;
+    font-weight: bold;
+}

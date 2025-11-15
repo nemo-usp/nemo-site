@@ -1,0 +1,177 @@
+{% extends './partials/base_layout.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/editor.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/media-library.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="central-content" 
+     style="max-width: 1400px; margin-top: 40px; margin-left: auto; margin-right: auto;" 
+     data-post-path="{{ post.path }}"
+     data-upload-url="{{ url_for('upload_asset') }}"
+     data-delete-url="{{ url_for('delete_asset') }}"
+     data-list-url="{{ url_for('list_assets') }}"
+     data-save-url="{{ url_for('save_post', path=post.path) }}"> <div class="page-top-actions">
+        {% if post.path %}
+        <button type="submit" form="delete-post-form" class="btn btn-danger">
+            Deletar Post
+        </button>
+        {% endif %}
+    </div>
+    
+    <h2 class="section-title">Editando Post</h2>
+
+    <form id="editor-form" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+        <div class="editor-container">
+            <div class="editor-header">
+                <div class="row g-3 align-items-end">
+                    
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#mediaLibraryModal">
+                            Mídia
+                        </button>
+                    </div>
+
+                    <div class="col-md-4">
+                        {% if post.path %}
+                        <a href="{{ url_for('view_post', path=post.path) }}" target="_blank" class="btn btn-outline-primary w-100" rel="noopener noreferrer">
+                            Ver Post
+                        </a>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-4">
+                        <div id="auto-save-status" class="btn btn-primary w-100 disabled" style="opacity: 1;">
+                            Salvo ✅
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            
+            <textarea id="post-content" name="content">{{ post.content or '' }}</textarea>
+        </div> 
+    </form> 
+    
+    {% if post.path %}
+    <form id="delete-post-form" action="{{ url_for('delete_post_file', path=post.path) }}" method="POST" style="display: none;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    </form>
+    {% endif %}
+</div>
+
+{% include 'partials/media_library_modal.html' %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+<script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      svg: { fontCache: 'global' }
+    };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="{{ url_for('static', filename='js/media-library.js') }}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const easyMDE = new EasyMDE({
+            element: document.getElementById('post-content'),
+            spellChecker: false,
+        });
+        
+        // --- Get All Page Elements ---
+        const centralContent = document.querySelector('.central-content');
+        const postPath = centralContent.dataset.postPath || 'general';
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+        const saveStatus = document.getElementById('auto-save-status');
+        const saveUrl = centralContent.dataset.saveUrl;
+
+        // --- Pass URLs to Global Scope for Media Library ---
+        document.documentElement.dataset.uploadUrl = centralContent.dataset.uploadUrl;
+        document.documentElement.dataset.deleteUrl = centralContent.dataset.deleteUrl;
+        document.documentElement.dataset.listUrl = centralContent.dataset.listUrl;
+
+        initializeMediaLibrary(easyMDE, function() {
+            return postPath;
+        });
+        
+        // --- Delete Confirmation Logic (Unchanged) ---
+        const deleteForm = document.getElementById('delete-post-form');
+        if (deleteForm) {
+            deleteForm.addEventListener('submit', function(event) {
+                const confirmed = confirm('Tem certeza de que deseja excluir este post permanentemente? Esta ação não pode ser desfeita.');
+                if (!confirmed) {
+                    event.preventDefault();
+                }
+            });
+        }
+
+        // --- NEW: Auto-Save Logic ---
+        let saveTimer;
+        let isSaving = false;
+
+        // 1. Function to update the save status indicator
+        function setSaveStatus(status, isError = false) {
+            if (isError) {
+                saveStatus.textContent = status;
+                saveStatus.classList.remove('btn-primary');
+                saveStatus.classList.add('btn-danger');
+            } else {
+                saveStatus.textContent = status;
+                saveStatus.classList.remove('btn-danger');
+                saveStatus.classList.add('btn-primary');
+            }
+        }
+
+        // 2. Function to perform the save
+        async function saveContent() {
+            if (isSaving) return; // Don't save if a save is already in progress
+            isSaving = true;
+            setSaveStatus('Salvando...');
+
+            const formData = new FormData();
+            formData.append('content', easyMDE.value());
+            formData.append('csrf_token', csrfToken);
+
+            try {
+                const response = await fetch(saveUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-CSRFToken': csrfToken }
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    setSaveStatus('Salvo ✅');
+                } else {
+                    throw new Error(data.message || 'Unknown save error');
+                }
+            } catch (error) {
+                console.error('Auto-save failed:', error);
+                setSaveStatus('Erro! ❌', true);
+            } finally {
+                isSaving = false;
+            }
+        }
+
+        // 3. Listen for changes in the editor
+        easyMDE.codemirror.on('change', function() {
+            // As soon as the user types, show "Changes pending"
+            setSaveStatus('Alterações pendentes...');
+            
+            // Clear the existing timer
+            clearTimeout(saveTimer);
+            
+            // Set a new timer to save 2 seconds after the user stops typing
+            saveTimer = setTimeout(saveContent, 2000); // 2000ms = 2 seconds
+        });
+        // --- END of Auto-Save Logic ---
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,127 @@
+/* --- 1. General Section Styles --- */
+.news-section {
+    text-align: center;
+    margin-top: 60px;
+}
+
+.section-title {
+    display: inline-block;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #a6fff8; /* Note: This color is different from other pages */
+    color: #070f43;
+}
+
+/* --- 2. Specific Section Styles --- */
+.awards-section {
+    background-color: #f0f9f9;
+    padding: 40px;
+    border-radius: 10px;
+}
+
+/* --- 3. Button Container --- */
+/* Removed unused rules for hidden posts */
+.button-container {
+    text-align: center; 
+    margin-top: 20px;
+}
+
+/* --- 4. News List Layout (for news-general.html & news-awards.html) --- */
+.news-list-container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+}
+
+.news-list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 25px;
+    padding: 25px 15px;
+    border-bottom: 1px solid #dee2e6;
+    text-decoration: none;
+    color: #212529;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px; 
+}
+
+.news-list-item:hover {
+    background-color: #f8f9fa;
+}
+
+.news-item-img {
+    width: 200px;
+    height: 150px;
+    flex-shrink: 0;
+}
+
+.news-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.news-item-info {
+    flex-grow: 1;
+}
+
+.news-item-info h4 {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #070f43;
+    margin: 0 0 10px 0;
+}
+
+.news-item-info p {
+    margin: 0;
+    font-size: 0.95em;
+    color: #343a40;
+}
+
+.news-item-meta {
+    flex-shrink: 0;
+    text-align: right;
+    width: 120px;
+    font-weight: 500;
+    color: #6c757d;
+    padding-top: 5px;
+}
+
+/* --- 5. Responsive Adjustments --- */
+@media (max-width: 768px) {
+    /* Merged rules from duplicate blocks */
+    .central-content {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+    
+    .news-section {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    /* List layout adjustments */
+    .news-list-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .news-item-img {
+        width: 100%;
+        max-width: 350px;
+        height: auto;
+    }
+
+    .news-item-meta {
+        text-align: center;
+        margin-top: 10px;
+        width: 100%;
+        padding-top: 0;
+    }
+}

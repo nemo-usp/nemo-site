@@ -1,0 +1,234 @@
+/* --- 1. GENERAL STYLES --- */
+body {
+    background-color: rgb(253, 246, 241);
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+/* --- 2. HERO SECTION (VIDEO HEADER) --- */
+.logocominfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center, flex-start; /* Vertically centers content on desktop */
+    min-height: auto;
+    padding: 0 0.25rem;
+}
+
+.logocominfo video {
+    width: 70vw;
+    height: auto;
+    z-index: 0;
+}
+
+.textos-logo {
+    margin-top: 0rem;
+    text-align: center;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out 4.25s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.textos-logo h1 {
+    font-size: 7rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.textos-logo p {
+    font-size: 1.7rem;
+    margin-top: 10px;
+}
+
+
+/* --- 3. TABBED INTERFACE SECTION --- */
+.tab-container {
+    padding: 50px 10%;
+    background-color: #ffffff;
+}
+
+.nav-tabs {
+    border-bottom: 2px solid #a6e1ff;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    font-weight: bold;
+    color: #6c757d;
+    padding: 10px 20px;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #a6e1ff;
+    color: #070f43;
+    border-radius: 5px 5px 0 0;
+}
+
+.tab-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+}
+
+.tab-pane-content {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.tab-text-content {
+    flex: 1;
+    overflow-wrap: break-word;
+}
+
+.tab-text-content h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #070f43;
+}
+
+.tab-image-container {
+    flex: 1;
+    max-width: 500px;
+}
+
+.tab-image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* --- 4. LATEST NEWS SECTION --- */
+/* Note: Slider-specific styles (swiper) are in swiper.css */
+.latest-news {
+    padding: 20px 10% 40px 10%; 
+    background-color: #ffffff;
+}
+
+.latest-news .section-title {
+    text-align: left;
+    display: block;
+    margin-bottom: 10px; 
+    font-size: 3rem;
+    font-weight: bold;
+    color: #070f43;
+    border-bottom: none;
+}
+
+.button-container {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Removed unused .button-container.initially-hidden rule */
+
+
+/* --- 5. PROBLEM OF THE MONTH SHOWCASE --- */
+.problem-showcase {
+    display: flex;
+    align-items: center;
+    background-color: #070f43;
+    color: white;
+}
+
+.problem-content {
+    flex: 2;
+    padding: 60px;
+}
+
+.problem-image-container {
+    flex: 1; /* Takes up its 1/3rd space */
+    display: flex; /* Use flex to center the image */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    min-width: 250px; /* Prevent it from getting too small */
+    padding: 20px 20px; /* Add some space so image doesn't touch edges */
+}
+
+.problem-image-container img {
+    width: 100%; /* Make image fill its container's width */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 450px; /* Don't let it get too huge */
+    border-radius: 8px; /* Optional: adds a nice finish */
+}
+
+/* Override default section title for the dark background */
+.problem-content .section-title {
+    color: white;
+    text-align: left;
+    border-bottom: 2px solid #a6e1ff;
+    display: inline-block;
+}
+
+.problem-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.problem-desc {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 30px;
+    white-space: pre-wrap;
+}
+
+
+/* --- 6. RESPONSIVE MEDIA QUERIES --- */
+@media (max-width: 992px) {
+    /* Tabs */
+    .tab-pane-content {
+        flex-direction: column;
+    }
+    .tab-text-content {
+        text-align: center;
+        order: 2;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    .tab-image-container {
+        order: 1;
+    }
+
+    /* Problem Showcase */
+    .problem-showcase {
+        flex-direction: column-reverse;
+    }
+    .problem-content {
+        text-align: center;
+    }
+    .problem-content .section-title {
+        text-align: center;
+    }
+    .problem-image {
+        min-height: 300px;
+        flex: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Hero */
+    .logocominfo {
+        justify-content: flex-start; /* Aligns content to top on mobile */
+        min-height: auto;
+        padding-bottom: 4rem;
+        margin-top: 0.5rem;
+    }
+
+    .logocominfo video {width: 100vw;}
+    .textos-logo h1 { font-size: 4rem; }
+    .textos-logo p { font-size: 1.2rem; }
+
+    /* News */
+    .latest-news {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+}

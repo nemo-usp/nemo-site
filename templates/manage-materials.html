@@ -1,0 +1,286 @@
+{% extends './partials/base_layout.html' %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/generic-pages.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/drafts.css') }}">
+<style>
+    .materials-table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+    .materials-table th, .materials-table td {
+        border: 1px solid #dee2e6;
+        padding: 12px;
+        vertical-align: middle;
+    }
+    .materials-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+    .materials-table .col-title { width: 50%; }
+    .materials-table .col-actions { width: 240px; text-align: center; }
+    .materials-table .col-handle { width: 0px; text-align: center; } /* New column */
+    .materials-table .btn { margin: 0 3px; }
+    .materials-table .btn-sm { padding: .25rem .5rem; font-size: .875rem; }
+    
+    /* --- New Drag-and-Drop Styles --- */
+    .drag-handle {
+        font-weight: bold;
+        cursor: grab; /* Show a "grab" cursor on hover */
+        font-size: 1.2rem;
+        color: #aaa;
+    }
+    /* This style is applied by SortableJS to the row being dragged */
+    .sortable-ghost {
+        opacity: 0.4;
+        background-color: #d3efff;
+    }
+    
+    #save-order-container {
+        display: none;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="central-content">
+    
+    <h2 class="section-title">Gerenciar Materiais</h2>
+
+    <div class="draft-item" style="flex-direction: column; align-items: stretch; padding: 25px;">
+        <h3 style="text-align: center; color: #070f43; margin-top: 0;">Adicionar Novo Material</h3>
+        
+        <form method="POST" action="{{ url_for('manage_materials') }}" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="mb-3">
+                <label for="title" class="form-label">Título:</label>
+                <input type="text" class="form-control" name="title" id="title" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Descrição:</label>
+                <textarea class="form-control" name="description" id="description" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="pdf_file" class="form-label">Arquivo PDF:</label>
+                <input type="file" class="form-control" name="pdf_file" id="pdf_file" accept=".pdf" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Adicionar Material</button>
+        </form>
+    </div>
+
+    <h3 style="text-align: center; color: #070f43; margin-top: 40px;">Material Atual</h3>
+    
+    <table class="materials-table">
+        <thead>
+            <tr>
+                <th class="col-handle">Ordem</th> <th class="col-title">Título</th>
+                <th class="col-actions">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="sortable-materials">
+            {% for item in materials %}
+            <tr class.A="sortable-row" id="item-{{ item.id }}" 
+                data-id="{{ item.id }}" 
+                data-title="{{ item.title }}" 
+                data-description="{{ item.description }}"
+                data-pdf-path="{{ url_for('static', filename=item.pdf_path) }}"
+                data-pdf-name="{{ item.pdf_path.split('/')[-1] }}">
+                
+                <td class="col-handle">
+                    <span class="drag-handle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-chevron-expand" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M3.646 9.146a.5.5 0 0 1 .708 0L8 12.793l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708m0-2.292a.5.5 0 0 0 .708 0L8 3.207l3.646 3.647a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 0 0 0 .708"/>
+                        </svg>
+                    </span>
+                </td>
+
+                <td>
+                    <strong>{{ item.title }}</strong>
+                    <p style="font-size: 0.9em; color: #6c757d; margin: 0;">{{ item.description }}</p>
+                </td>
+                
+                <td class="col-actions">
+                    <button type="button" class="btn btn-secondary btn-sm edit-btn" 
+                            data-bs-toggle="modal" data-bs-target="#editMaterialModal"
+                            data-item-id="{{ item.id }}">
+                        Editar
+                    </button>
+                    
+                    <button type="button" class="btn btn-danger btn-sm delete-btn" 
+                            data-item-id="{{ item.id }}">
+                        Deletar
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div id="save-order-container">
+        <button id="save-order-btn" class="btn btn-primary" style="width: 100%; padding: 10px;">
+            Salvar Nova Ordem
+        </button>
+    </div>
+
+    <hr>
+    
+</div>
+
+<div class="modal fade" id="editMaterialModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="edit-form" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar Material</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="edit-title" class="form-label">Título:</label>
+                        <input type="text" class="form-control" name="title" id="edit-title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-description" class="form-label">Descrição:</label>
+                        <textarea class="form-control" name="description" id="edit-description" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-pdf_file" class="form-label">Substituir PDF (Opcional):</label>
+                        <p style="font-size: 0.9em; color: #6c757d;" id="edit-current-pdf">
+                            Atual: <a href="" target="_blank"></a>
+                        </p>
+                        <input type="file" class="form-control" name="pdf_file" id="edit-pdf_file" accept=".pdf">
+                        <small class="form-text text-muted">Deixe em branco para manter o PDF atual.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <hr>
+
+</div>
+
+<form id="delete-form" method="POST" action="" style="display: none;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // --- Edit Modal Logic (Unchanged) ---
+    const editModal = document.getElementById('editMaterialModal');
+    const editForm = document.getElementById('edit-form');
+    const editTitle = document.getElementById('edit-title');
+    const editDescription = document.getElementById('edit-description');
+    const editCurrentPdfLink = document.getElementById('edit-current-pdf').querySelector('a');
+    const editPdfInput = document.getElementById('edit-pdf_file');
+    const editButtons = document.querySelectorAll('.edit-btn');
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const itemId = this.getAttribute('data-item-id');
+            const itemRow = document.getElementById('item-' + itemId);
+            const title = itemRow.getAttribute('data-title');
+            const description = itemRow.getAttribute('data-description');
+            const pdfPath = itemRow.getAttribute('data-pdf-path');
+            const pdfName = itemRow.getAttribute('data-pdf-name');
+
+            editForm.action = '/manage-materials/update/' + itemId;
+            editTitle.value = title;
+            editDescription.value = description;
+            editCurrentPdfLink.href = pdfPath;
+            editCurrentPdfLink.textContent = pdfName;
+            editPdfInput.value = '';
+        });
+    });
+
+    // --- Delete Button Logic (Unchanged) ---
+    const deleteForm = document.getElementById('delete-form');
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const confirmed = confirm('Tem certeza que deseja deletar este material?');
+            if (confirmed) {
+                const itemId = this.getAttribute('data-item-id');
+                deleteForm.action = '/manage-materials/delete/' + itemId;
+                deleteForm.submit();
+            }
+        });
+    });
+
+    // --- UPDATED: Reordering Logic ---
+    const saveOrderContainer = document.getElementById('save-order-container');
+    const saveOrderBtn = document.getElementById('save-order-btn');
+    const sortableList = document.getElementById('sortable-materials');
+    
+    // 1. Initialize SortableJS
+    new Sortable(sortableList, {
+        animation: 150, // ms, animation speed
+        handle: '.drag-handle', // Specify the class to use as a drag handle
+        ghostClass: 'sortable-ghost', // The class for the drop placeholder
+        
+        // This event fires after you drop an item
+        onEnd: function(evt) {
+            // The item was dragged and its position changed
+            showSaveButton();
+        }
+    });
+
+    // 2. Function to show the save button
+    function showSaveButton() {
+        saveOrderContainer.style.display = 'block';
+    }
+
+    // 3. Save Button Logic (This is the same as before!)
+    saveOrderBtn.addEventListener('click', function() {
+        saveOrderBtn.textContent = 'Salvando...';
+        saveOrderBtn.disabled = true;
+
+        const rows = sortableList.querySelectorAll('.sortable-row');
+        const newOrder = [];
+        rows.forEach(row => {
+            newOrder.push(row.getAttribute('data-id'));
+        });
+
+        // Send this array to the backend
+        fetch("{{ url_for('save_material_order') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('input[name="csrf_token"]').value
+            },
+            body: JSON.stringify({ order: newOrder })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                window.location.reload();
+            } else {
+                alert('Error saving order: ' + data.error);
+                saveOrderBtn.textContent = 'Salvar Nova Ordem';
+                saveOrderBtn.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            alert('A network error occurred. Please try again.');
+            saveOrderBtn.textContent = 'Salvar Nova Ordem';
+            saveOrderBtn.disabled = false;
+        });
+    });
+
+});
+</script>
+{% endblock %}

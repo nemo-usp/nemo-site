@@ -1,0 +1,90 @@
+/* static/styles/swiper.css */
+
+/* --- 1. Main Swiper Container --- */
+.slider-wrapper {
+    position: relative;
+    padding: 0 40px; 
+    max-width: 1220px;
+    margin: 0 auto;
+}
+
+.slide-container {
+    max-width: 1120px;
+    width: 100%;
+    padding: 43px 23px;
+    position: relative;
+    margin: 0 auto;
+}
+
+/* --- 2. Swiper Navigation Buttons --- */
+/* FIX: Selectors are corrected.
+  These rules style the *default* Swiper classes.
+  Your HTML should use <div class="swiper-button-prev your-unique-class"></div>
+  This allows these styles to apply to ALL sliders.
+*/
+.slider-wrapper .swiper-button-prev,
+.slider-wrapper .swiper-button-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    cursor: pointer;
+    
+    color: #070f43; 
+    transition: color 0.3s ease;
+    --swiper-navigation-size: 40px; 
+}
+
+.slider-wrapper .swiper-button-prev:hover,
+.slider-wrapper .swiper-button-next:hover {
+    color: #4070F4; 
+}
+
+/* Positioning */
+.slider-wrapper .swiper-button-prev {
+     left: 0px; /* Positioned at the edge of the wrapper */
+}
+.slider-wrapper .swiper-button-next {
+     right: 0px; /* Positioned at the edge of the wrapper */
+}
+
+/* --- 3. Swiper Pagination Dots --- */
+/* FIX: Selectors are corrected.
+  This styles the main pagination container.
+*/
+.slide-container .swiper-pagination {
+    position: relative; 
+    bottom: auto;       
+    margin-top: 25px;   
+}
+
+/* These rules style the pagination bullets themselves.
+  They will apply to all paginations.
+*/
+.swiper-pagination-bullet {
+    background-color: #6E93f7; 
+    opacity: 0.7;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: #070f43; 
+    opacity: 1;
+}
+
+/* --- 4. Responsive Adjustments --- */
+@media screen and (max-width: 768px) {
+    .slider-wrapper {
+        /* Remove horizontal padding to save space */
+        padding: 0 10px;
+    }
+
+    .slide-container {
+        padding: 40px 10px;
+    }
+
+    /* Hide buttons on small screens */
+    .slider-wrapper .swiper-button-prev,
+    .slider-wrapper .swiper-button-next {
+        display: none;
+    }
+}

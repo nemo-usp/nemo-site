@@ -1,0 +1,229 @@
+{% extends './partials/base_layout.html' %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/separador.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/generic-pages.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/accordion.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/faq.css') }}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/video-size-adjust.js') }}"></script>
+
+<script>
+    // This script checks if the URL has a hash (e.g., #encontros-semanais)
+    // and automatically opens the corresponding accordion item.
+    document.addEventListener("DOMContentLoaded", () => {
+        if (window.location.hash) {
+            // .substring(1) removes the '#' from the hash string
+            const tag = window.location.hash.substring(1); 
+            
+            if (tag === "encontros-semanais") {
+                const accordionItem = document.getElementById(tag);
+                if (accordionItem) {
+                    // Use querySelector for stable, specific selection
+                    const button = accordionItem.querySelector('.accordion-button');
+                    const collapseRegion = accordionItem.querySelector('.accordion-collapse');
+
+                    if (button && collapseRegion) {
+                        button.setAttribute('aria-expanded', 'true');
+                        button.classList.remove('collapsed');
+                        collapseRegion.classList.add('show');
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="div-separadora">
+
+    <h1 id="text-to-measure"> $\text{FAQ}$ </h1>
+
+    <video id="video-to-resize" autoplay muted playsinline>
+        <source src="{{ url_for('static', filename='videos/titles/faq.webm') }}" type="video/webm">
+    </video>
+
+</div>
+
+<div class="central-content">
+    
+    <h2 class="section-title">Perguntas Frequentes</h2>
+
+    <div class="accordion" id="faqAccordion">
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading1">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                    O que é o grupo de extensão NEMO?
+                </button>
+            </h2>
+            <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <p>Veja <a href="/about#quem-somos">Quem somos?</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                    O que o NEMO faz?
+                </button>
+            </h2>
+            <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <p>Veja <a href="/about#quais-atividades-nemo">Quais as atividades do NEMO?</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item" id="encontros-semanais">
+            <h2 class="accordion-header" id="heading3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                    Como funcionam os encontros semanais?
+                </button>
+            </h2>
+            <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <p>No início do ano, é decidido por enquete no nosso <a href="https://t.me/nemoavisos">canal de avisos</a> do Telegram o dia da semana e o horário dos encontros semanais.</p>
+                    <p>Antes do dia desses encontros, a coordenação elabora e manda no canal de avisos uma lista de problemas a serem discutidos no encontro. A ideia é que você dê uma olhada por cima nos problemas da lista durante esse tempo e, no encontro, o autor da lista e voluntários que também tenham resolvido apresentem suas soluções.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading4">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">
+                    O que é o projeto Problema do Mês?
+                </button>
+            </h2>
+            <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <p>Veja <a href="/months-problems">Problemas do mês</a>.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading5">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5">
+                    O que são olimpíadas de matemática?
+                </button>
+            </h2>
+            <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <p>São competições de matemática cujos problemas tem soluções que envolvem ideias criativas. Veja um
+                        exemplo de problema <a href="/about#como-sao-problemas">aqui</a>.</p>
+                    <p>A maioria das olimpíadas tem problemas assim e atribui a cada um deles uma pontuação, de acordo com
+                        critérios de correção pré-estabelecidos. Quanto mais pontos você obtiver, mais chance de ganhar uma
+                        medalha!</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading6">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6">
+                    O que é e como é a Olimpíada Brasileira de Matemática (OBM)?
+                </button>
+            </h2>
+            <div id="collapse6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                     <div class="img-container img-olimpiada">
+                        <img src="{{ url_for('static', filename='imgs/faq-page/logo-obm.jpg') }}" alt="">
+                    </div>
+                    <p>Um dos objetivos da OBM é interferir decisivamente em prol da melhoria do ensino de Matemática no
+                        Brasil, estimulando alunos e professores a um aprimoramento maior propiciado
+                        pela participação em olimpíadas.</p>
+                    <p>Ela é feita em 2 dias de prova. Cada prova tem 4h30min de duração e 3 problemas discursivos de
+                        dificuldade variada que valem de 0 a 10 pontos. A pontuação final da olimpíada, para o nível
+                        universitário, leva em conta também a pontuação na Competição Elon Lages Lima de matemática (CELL),
+                        que vai de 0 a 25 pontos e pode ser pensada como uma "primeira fase". A nota final da OBM é obtida
+                        ao multiplicar a soma dos pontos em cada problma por 5 e a esse resultado adicionar 2 vezes a nota
+                        da CELL.</p>
+                    <p>Para mais informações, visite o <a href="https://www.obm.org.br">site oficial</a> deles.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading7">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7">
+                    O que é e como é a Competição Elon Lages Lima de Matemática (CELL)?
+                </button>
+            </h2>
+            <div id="collapse7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <div class="img-container img-olimpiada">
+                        <img src="{{ url_for('static', filename='imgs/faq-page/logo-cell.webp') }}" alt="">
+                    </div>
+                    <p>A CELL, cujo nome é uma homenagem ao falecido matemático brasileiro Elon Lages, é uma competição
+                        criada pela Associação da Olimpíada Brasileira de Matemática (AOBM).</p>
+                    <p>Ela é uma prova de 3 horas de duração com 25 questões de marcar. Ela é diferente das outras, porque
+                        não existem problemas discursivos em que você deve provar resultados e é uma "primeira fase" que
+                        seleciona os estudantes que vão fazer a Olimpíada Brasileira de Matemática (OBM).</p>
+                    <p>O site da competição muda a cada ano, mas o endereço eletrônico de sua 3a edição foi <a
+                            href="https://www.obm.org.br/competicao-elon-lages-lima-de-matematica/">neste link</a>.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading8">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8">
+                    O que é e como é a International Mathematics Competition (IMC)?
+                </button>
+            </h2>
+            <div id="collapse8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <div class="img-container img-olimpiada">
+                        <img src="{{ url_for('static', filename='imgs/faq-page/imc-logo.jpg') }}" alt="">
+                    </div>
+                    <p>É a maior olimpíada internacional de matemática universitária.</p>
+                    <p>Ela é geralmente organizada em 2 dias e em cada um é aplicada uma prova de 5h de duração e com 4
+                        problemas. Todos os problemas são discursivos e valem de 0 a 10 pontos, possuindo dificuldades
+                        variadas.</p>
+                    <p>Em 2022 ela foi híbrida, permitindo que os integrantes do NEMO participassem virtualmente (inclusive
+                        tivemos um resultado tão bom esse ano que aparecemos em uma reportagem no <a
+                            href="https://jornal.usp.br/universidade/grupo-de-matematica-da-usp-se-destaca-em-olimpiada-internacional-universitaria/"
+                            target="_blank">Jornal da USP</a>), mas em 2023 é provável que não seja, o que torna incerta
+                        nossa participação.</p>
+                    <p>Para mais informações sobre a competição, visite o <a href="https://www.imc-math.org.uk">site
+                            oficial</a> deles.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading9">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse9">
+                    O que é e como é a Competencia Iberoamericana Interuniversitaria de Matemáticas (CIIM)?
+                </button>
+            </h2>
+            <div id="collapse9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <div class="img-container img-olimpiada">
+                        <img src="{{ url_for('static', filename='imgs/faq-page/LogoCIIM.png') }}" alt="">
+                    </div>
+                    <p>A Competição Ibero-americana Interuniversitaria de Matemática (CIIM) tem como objetivo incentivar o
+                        estudo de matemática e a excelência acadêmica da comunidade universitária ibero-americana. </p>
+                    <p>Ela é feita em 2 dias. Em cada dia, existem pelo menos 3 problemas, valendo 20 pontos cada. A duração
+                        a ser decidida para cada ano varia entre 4 e 5 horas.</p>
+                    <p>Ela é geralmente feita em outro país. Em 2022, foi feita em Bogotá, na Colombia. Para mais
+                        informações, visite o <a href="http://ciim.uan.edu.co">site oficial</a> deles.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+</div>
+
+
+
+{% endblock %}

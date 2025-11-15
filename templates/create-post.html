@@ -1,0 +1,181 @@
+{% extends './partials/base_layout.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/editor.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/media-library.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="central-content" 
+     style="max-width: 1400px; margin-top: 40px; margin-left: auto; margin-right: auto;"
+     data-upload-url="{{ url_for('upload_asset') }}"
+     data-delete-url="{{ url_for('delete_asset') }}"
+     data-list-url="{{ url_for('list_assets') }}">
+    
+    <h2 class="section-title">Criar Novo Post</h2>
+
+    <form id="create-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+        <div class="editor-container">
+            <div class="editor-header">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="post_type" class="form-label">Tipo do Post:</label>
+                        <select id="post_type" name="post_type" class="form-select">
+                            <option value="News">Notícias</option>
+                            <option value="Month-Problem">Problema do Mês</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="filename_base" class="form-label">Nome do Arquivo:</label>
+                        <input type="text" id="filename_base" name="filename_base" class="form-control" placeholder="meu-titulo-de-post" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#mediaLibraryModal">
+                            Mídia
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100" id="save-post-btn">Salvar Post</button>
+                    </div>
+                </div>
+            </div> 
+            
+            <textarea id="post-content" name="full_content"></textarea>
+        </div> 
+    </form>
+</div>
+
+{% include 'partials/media_library_modal.html' %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+<script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      svg: { fontCache: 'global' }
+    };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="{{ url_for('static', filename='js/media-library.js') }}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const easyMDE = new EasyMDE({
+            element: document.getElementById('post-content'),
+            spellChecker: false,
+        });
+
+        // --- Helper function to get the post path (Unchanged) ---
+        function getPostPath() {
+            let path = document.getElementById('filename_base').value;
+            let type = document.getElementById('post_type').value;
+
+            if (type === 'News') {
+                path = 'news/' + path;
+            } else if (type === 'Month-Problem') {
+                path = 'months-problems/' + path;
+            }
+            
+            return path || 'general';
+        }
+
+        // --- Initialize the Media Library (Unchanged) ---
+        const centralContent = document.querySelector('.central-content');
+        document.documentElement.dataset.uploadUrl = centralContent.dataset.uploadUrl;
+        document.documentElement.dataset.deleteUrl = centralContent.dataset.deleteUrl;
+        document.documentElement.dataset.listUrl = centralContent.dataset.listUrl;
+
+        initializeMediaLibrary(easyMDE, getPostPath);
+
+        const postTypeSelector = document.getElementById('post_type');
+
+        // --- Load Template Function (Unchanged) ---
+        function loadTemplate(type) {
+            let templatePath = '';
+            if (type === 'News') {
+                templatePath = "{{ url_for('static', filename='post_templates/Template_News.md') }}";
+            } else if (type === 'Month-Problem') {
+                templatePath = "{{ url_for('static', filename='post_templates/Template_MonthProblem.md') }}";
+            }
+            
+            if (templatePath) {
+                if (easyMDE.value().trim() !== '') {
+                    if (!confirm('Carregar um template irá substituir o conteúdo atual. Você tem certeza?')) {
+                        return;
+                    }
+                }
+                fetch(templatePath)
+                    .then(response => response.text())
+                    .then(text => {
+                        const today = new Date();
+                        const year = today.getFullYear();
+                        const month = String(today.getMonth() + 1).padStart(2, '0');
+                        const day = String(today.getDate()).padStart(2, '0');
+                        const formattedDate = `${year}-${month}-${day}`;
+                        const updatedText = text.replace(/date:.*$/m, `date: ${formattedDate}`);
+                        easyMDE.value(updatedText);
+                    })
+                    .catch(error => console.error('Error loading template:', error));
+            }
+        }
+
+        loadTemplate(postTypeSelector.value);
+        postTypeSelector.addEventListener('change', function() {
+            loadTemplate(this.value);
+        });
+        
+        // --- NEW: AJAX Create Post Logic ---
+        const createForm = document.getElementById('create-form');
+        const saveButton = document.getElementById('save-post-btn');
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+        createForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Stop the default page reload
+            
+            saveButton.textContent = 'Salvando...';
+            saveButton.disabled = true;
+
+            // Get all form data
+            const formData = new FormData();
+            formData.append('csrf_token', csrfToken);
+            formData.append('post_type', document.getElementById('post_type').value);
+            formData.append('filename_base', document.getElementById('filename_base').value);
+            // Get the raw text from EasyMDE
+            formData.append('full_content', easyMDE.value());
+
+            // Send data to the backend
+            fetch("{{ url_for('create_post_save') }}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    // We're sending form data, not JSON
+                    'X-CSRFToken': csrfToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // SUCCESS! Redirect to the new editor page.
+                    window.location.href = data.edit_url;
+                } else {
+                    // Handle errors
+                    alert('Error creating post: ' + data.message);
+                    saveButton.textContent = 'Salvar Post';
+                    saveButton.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert('A network error occurred. Please try again.');
+                saveButton.textContent = 'Salvar Post';
+                saveButton.disabled = false;
+            });
+        });
+
+    });
+</script>
+{% endblock %}
