@@ -54,9 +54,9 @@ Você pode executar este projeto localmente para desenvolvimento ou testes. Exis
 5.  **Inicialize o Banco de Dados (Primeira vez):**
     Execute os seguintes comandos na ordem correta para criar o arquivo do banco de dados (por padrão `posts.db`) e configurar as tabelas:
     ```
-    flask db init     # Cria a pasta 'migrations' (apenas na primeira vez)
-    flask db migrate -m "Initial database schema"  # Cria o script de migração inicial
-    flask db upgrade  # Aplica a migração para criar o banco de dados e tabelas
+    flask db init     
+    flask db migrate -m "Initial database schema"  
+    flask db upgrade 
     ```
 
     (OBS: Caso essa parte esteja falhando, tente excluir as pastas: `venv`, `instance` e `migrations` e repita a partir do passo 3.)
